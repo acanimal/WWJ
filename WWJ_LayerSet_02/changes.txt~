@@ -1,0 +1,95 @@
+Changes from original WWJ 0.3.0
+----------------------------------
+
+* On file "gov.nasa.worldwind.util.MessageStrings.properties" added line:
+    layers.Earth.TimelineLayer.Name=Timeline
+
+* Added "gov.nasa.worldwind.layers.LayerSet" class.
+
+* Added "gov.nasa.worldwind.util.TemporalityAdapter" class.
+
+* Added "gov.nasa.worldwind.util.Temporality" class.
+
+* Added "gov.nasa.worldwind.layers.Earth.TimelineLayer" class.
+
+* Modified interface "gov.nasa.worldwind.view.View", added methods:
+
+    public void setTemporality(Temporality temporality);
+    public Temporality getTemporality();
+    public Temporality getTemporalityCursor();
+    public void setTemporalityCursorSize(int type, int value);
+    public void temporalityCursorStepUp();
+
+* Modified class "gov.nasa.worldwind.view.AbstractView", added code to 
+  implements previous methods:
+
+    private Temporality temporality = null;
+    private Temporality cursor = null;
+    private int cursorSize = 1;
+    private int cursorField = Calendar.DAY_OF_MONTH;
+
+    public void setTemporality(Temporality temporality)
+    {
+        if (temporality == null)
+        {
+            String message = Logging.getMessage("nullValue.ObjectIsNull");
+            Logging.logger().severe(message);
+            throw new IllegalArgumentException(message);
+        }
+
+        this.temporality = temporality;
+
+        // Calculate initial and final cursos calendars.
+        Calendar start = Calendar.getInstance();
+        start.setTime(temporality.getInitialTimeStamp().getTime());
+
+        Calendar end = Calendar.getInstance();
+        end.setTime(start.getTime());
+        end.add(cursorField, cursorSize);
+
+        cursor = new Temporality(start, end);
+    }
+
+    public Temporality getTemporality()
+    {
+        return temporality;
+    }
+
+    public Temporality getTemporalityCursor()
+    {
+        return cursor;
+    }
+
+    public void setTemporalityCursorSize(int field, int value)
+    {
+        this.cursorField = field;
+        this.cursorSize = value;
+    }
+
+    public void temporalityCursorStepUp()
+    {
+        if (cursor == null)
+        {
+            return;
+        }
+
+        // Increase cursor position.s
+        cursor.getInitialTimeStamp().add(cursorField, cursorSize);
+        cursor.getFinalTimeStamp().add(cursorField, cursorSize);
+
+        // Check if cursor start if beyond the final temporality time of the view.
+        if (cursor.getInitialTimeStamp().after(temporality.getFinalTimeStamp()) || cursor.getInitialTimeStamp().equals(temporality.getFinalTimeStamp()))
+        {
+            cursor.getInitialTimeStamp().setTime(temporality.getInitialTimeStamp().getTime());
+            cursor.getFinalTimeStamp().setTime(temporality.getInitialTimeStamp().getTime());
+            cursor.getFinalTimeStamp().add(cursorField, cursorSize);
+        }
+        // Check if cursor end if beyond the final temporality time of the view.
+        if (cursor.getFinalTimeStamp().after(temporality.getFinalTimeStamp()))
+        {
+            cursor.getFinalTimeStamp().setTime(temporality.getFinalTimeStamp().getTime());
+        }
+    }
+
+* Added example file "gov.nasa.worldwind.examples.TemporalityExample" using LayerSet and Temporality.
+

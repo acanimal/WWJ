@@ -1,0 +1,21 @@
+Author: 
+-------
+Antonio Santiago <asantiagop@gmail.com>
+
+Description:
+------------
+Prism object allow to render shaped from globe surface to the specified top elevation. You can render it 
+in a wire or filled mode, change the fill or wire color (and transparency) and change the top elevation.
+It is very useful for thematic maps.
+
+This new version allows for Prism selection. Remeber in selection mode you can't interact with the globe.
+If you want to work in the old way (without selection and interacting with the globe) then set 'setPickEnable'
+to false in the RenderableLayer where you put the Prism avoids this "problem".
+
+
+Changes from original WWJ 0.5.0:
+--------------------------------
+Any change on the original source code. All you need is to copy the files to the specified packages.
+
+
+

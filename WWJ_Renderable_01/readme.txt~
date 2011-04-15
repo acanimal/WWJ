@@ -1,0 +1,47 @@
+Author: 
+-------
+Antonio Santiago <asantiagop@gmail.com>
+
+Description:
+------------
+Modified version of WWJ to adding more common methods to Renderable interface.
+The idea is that every Renderable object has a 'render' method but also can
+be enable (or not), can has a name and can has an opacity.
+
+Also the Layer interface inherits (without any changes) from Renderable.
+
+These new methods are:
+
+    public boolean isEnabled();
+
+    public void setEnabled(boolean enabled);
+
+    public String getName();
+
+    public void setName(String name);
+
+    public double getOpacity();
+
+    public void setOpacity(double opacity);
+
+in addition to the original one:
+
+    public void render(DrawContext dc);
+
+
+Changes from original WWJ 0.3.0:
+--------------------------------
+
+This code add the previous methods to the Renderable interface, adds its implementation 
+to all required code and add some new capabilities like take in account the icon or 
+image opacity in the rendering process.
+
+Modified classes are:
+
+* gov.nasa.worldwind.render.Renderable.
+* Added a default implementation on all affected objects.
+* Created new class 'gov.nasa.worldwind.layers.RenderableListLayer', a modified version of LayerList
+  that stores Renderable objects (Layer or some other Renderable implementation).
+* Modified...
+
+

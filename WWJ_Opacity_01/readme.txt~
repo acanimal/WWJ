@@ -1,0 +1,84 @@
+Author: 
+-------
+Antonio Santiago <asantiagop@gmail.com>
+
+Description:
+------------
+This file describes the changes needed to allow modificable opacity in layers
+based on TileImageLayer class.
+
+The class SurfaceTileRenderer is responsible to render tiles of any tiled layer,
+the problem is it doesn't take in account the layer opacity.
+The idea is to add a reference, in the method responsible to render the tiles,
+that points to the layer that contains the tiles to be drawn. Also I have
+added code to set the opacity.
+
+Finally it is necessary to modify all calls to this method on all layers
+that calls it.
+
+Changes from original WWJ 0.3.0:
+--------------------------------
+
+I have attached the modified files, but here are a brief descripcion of 
+ changed respect WWJ 0.3.0:
+
+* 'SurfaceTileRenderer.java'. On 'rederTiles' method, added a reference
+  to the layer that contains the tiles. Then every tile can be rendered with
+  the opacity specified in the layer:
+
+  Change:
+            public void renderTiles(DrawContext dc, Iterable<? extends SurfaceTile> tiles) ...
+  by:
+            public void renderTiles(DrawContext dc, Iterable<? extends SurfaceTile> tiles, AbstractLayer layer)...
+
+  Also, after next code:
+
+            ...
+            gl.glActiveTexture(alphaTextureUnit);
+            gl.glEnable(GL.GL_TEXTURE_2D);
+            gl.glMatrixMode(GL.GL_TEXTURE);
+            gl.glPushMatrix();
+            gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
+
+  I have added:
+
+            // Set opacity
+            if (layer != null) {
+                gl.glTexEnvi(GL.GL_TEXTURE_ENV, GL.GL_TEXTURE_ENV_MODE, GL.GL_MODULATE);
+                gl.glColor4f(1, 1, 1, (float) layer.getOpacity());
+            }
+            ...
+
+  Finally in the 'renderTile' method you need to add a reference to the owner layer
+  and modify the call to 'renderTiles'.
+
+  Change:
+            public void renderTile(DrawContext dc, SurfaceTile tile) ...
+  by:
+            public void renderTile(DrawContext dc, SurfaceTile tile, AbstractLayer layer) ...
+
+  And modify the call:
+            this.renderTiles(dc, al);
+  by:
+            this.renderTiles(dc, al, layer);
+
+
+* Finally, next is a list of files that must be modified to change the invokation 
+  to the above methods 'renderTile' and 'renderTiles'. As example, in 
+  TileImageLayer's 'draw' method you must change the call:
+
+            dc.getGeographicSurfaceTileRenderer().renderTiles(dc, this.currentTiles);
+  by:
+            dc.getGeographicSurfaceTileRenderer().renderTiles(dc, this.currentTiles, this);
+
+  to a reference to the owner layer to the SurfaceTileRenderer.
+
+  List of modified classes, note that in SurfaceImage and SurfaceShape you must
+  put a 'null' reference on the owner layer.
+
+  - TileImageLayer.
+  - RPFLayer.
+  - SurfaceImage.
+  - SurfaceShape.
+
+

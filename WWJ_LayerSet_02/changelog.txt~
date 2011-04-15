@@ -1,0 +1,8 @@
+10-Nov-2007
+
+* Added 'containsClass' method to query if some type of class is contained by the LayerSet or
+  some of its possible contained LayerSets.
+
+* Override method 'contains' to query if some object is contained by the LayerSet or some
+  possible contained LayerList.
+

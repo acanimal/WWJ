@@ -1,0 +1,16 @@
+Author: 
+-------
+Antonio Santiago <asantiagop@gmail.com>
+
+Description:
+------------
+Prism object allow to render shaped from globe surface to the specified top elevation. You can render it 
+in a wire or filled mode, change the fill or wire color (and transparency) and change the top elevation.
+It is very useful for thematic maps.
+
+Changes from original WWJ 0.5.0:
+--------------------------------
+Any change on the original source code. All you need is to copy the files to the specified packages.
+
+
+
